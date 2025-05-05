@@ -15,19 +15,32 @@ const feirinha = [
 ];
 
 app.get('/feirinha', (req, res) => {
-    res.send(feirinha);
+    const { name, quantity, type } = req.query;
+
+    const itemComFiltro = feirinha.filter(item => {
+        return (!name || item.name.includes(name)) &&
+               (!quantity || item.quantity >= Number(quantity)) &&
+               (!type || item.type === type); 
+    });
+
+    res.send(itemComFiltro);
 });
 
 app.get('/feirinha/:id', (req, res) => {
     const id = req.params.id;
-    const item = feirinha.find(item => {
-        return item.id == Number(id)
+    const item = feirinha.find(unidade => {
+        return unidade.id == Number(id)
     });
+    if (id <= 0) {
+        return res.status(400).send({error: "Produto não encontrado!"});
+    }
+    if (id > feirinha.length) {
+        return res.status(404).send({error: "Produto não encontrado!"});
+    }
     res.send(item);
 })
 
 app.post('/feirinha', (req, res) => {
-    console.log(req.body);
     const {name, quantity, type} = req.body;
     if (!name || !quantity || !type) {
        return res.status(422).send({error: "Preencha todos os campos!"});   
