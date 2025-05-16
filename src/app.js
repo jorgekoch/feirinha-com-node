@@ -18,7 +18,7 @@ app.get('/feirinha', (req, res) => {
     const { name, quantity, type } = req.query;
 
     const itemComFiltro = feirinha.filter(item => {
-        return (!name || item.name.includes(name)) &&
+        return (!name || item.name === name) &&
                (!quantity || item.quantity >= Number(quantity)) &&
                (!type || item.type === type); 
     });
